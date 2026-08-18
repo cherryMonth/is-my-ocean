@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1d0a2d" />
+    <meta
+      name="description"
+      content="一朵不会凋谢的 Cyber Kitty 电子玫瑰。"
+    />
+    <title>LOVE CORE // 七夕限定</title>
+    <link rel="preload" href="./assets/qixi-love-core.mp3" as="audio" type="audio/mpeg" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2308040c'/%3E%3Cpath d='M32 51S11 39 11 23c0-13 17-16 21-5 4-11 21-8 21 5 0 16-21 28-21 28Z' fill='%23ff147f'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+    <div class="ambient-grid" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="cursor-light" aria-hidden="true"></div>
+
+    <div class="app" id="app">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="LOVE CORE 首页">
+          <span class="brand-mark">
+            <i></i><i></i><i></i>
+          </span>
+          <span>KITTY.OS</span>
+          <small>LOVE SYSTEM</small>
+        </a>
+
+        <div class="system-state" aria-live="polite">
+          <span class="state-dot"></span>
+          <span id="system-state-text">CORE STANDBY</span>
+        </div>
+
+        <button class="sound-toggle" id="sound-toggle" type="button" aria-label="开启声音">
+          <span class="sound-bars" aria-hidden="true">
+            <i></i><i></i><i></i>
+          </span>
+          <span class="sound-label">SOUND OFF</span>
+        </button>
+      </header>
+
+      <main class="hero">
+        <section class="visual-panel" aria-label="Hello Kitty 心动战甲变身系统">
+          <div class="hud-shell">
+            <div class="hud-corner corner-tl"><span></span></div>
+            <div class="hud-corner corner-tr"><span></span></div>
+            <div class="hud-corner corner-bl"><span></span></div>
+            <div class="hud-corner corner-br"><span></span></div>
+
+            <div class="ring ring-outer">
+              <span class="ring-label label-a">QIXI</span>
+              <span class="ring-label label-b">LOVE</span>
+              <span class="ring-label label-c">∞</span>
+            </div>
+            <div class="ring ring-mid"></div>
+            <div class="ring ring-inner"></div>
+            <div class="orbit-dot dot-one"></div>
+            <div class="orbit-dot dot-two"></div>
+
+            <div
+              class="rose-wrap transformation-stage"
+              id="rose-wrap"
+              role="button"
+              tabindex="0"
+              aria-label="启动 Hello Kitty 心动战甲"
+            >
+              <div class="assembly-aura"></div>
+              <div class="assembly-platform"></div>
+
+              <svg class="kitty-underlay" viewBox="0 0 985 985" aria-hidden="true">
+                <path
+                  d="M194 282 C178 203 185 117 247 91 C285 76 330 105 365 116 C451 83 561 79 645 113 C684 83 748 56 778 88 C807 119 813 190 806 269 C836 332 829 445 787 506 C732 579 635 598 493 598 C351 598 254 576 208 508 C169 448 164 344 194 282Z"
+                />
+                <path d="M288 568 C235 585 179 643 177 706 C175 758 217 789 268 765 L337 666Z" />
+                <path d="M689 557 C742 524 818 482 844 527 C871 574 830 650 748 704 L661 642Z" />
+                <path d="M302 777 L493 781 L488 888 C477 946 411 956 345 949 C291 943 275 904 283 842Z" />
+                <path d="M493 781 L702 777 L707 850 C715 911 681 949 622 953 C555 957 501 943 491 892Z" />
+              </svg>
+
+              <svg class="kitty-base" viewBox="0 0 985 985" aria-hidden="true">
+                <defs>
+                  <filter id="kitty-white-to-alpha" color-interpolation-filters="sRGB">
+                    <feColorMatrix
+                      type="matrix"
+                      values="
+                        1 0 0 0 0
+                        0 1 0 0 0
+                        0 0 1 0 0
+                       -0.34 -0.34 -0.34 0 1
+                      "
+                    />
+                    <feComponentTransfer>
+                      <feFuncA type="gamma" amplitude="1.9" exponent="0.7" offset="0" />
+                    </feComponentTransfer>
+                    <feComposite in2="SourceAlpha" operator="in" />
+                  </filter>
+                </defs>
+                <image
+                  href="./assets/hello-kitty-reference.png"
+                  width="985"
+                  height="985"
+                  filter="url(#kitty-white-to-alpha)"
+                />
+              </svg>
+
+              <svg class="transformation-overlay" viewBox="0 0 985 985" aria-hidden="true">
+                <defs>
+                  <linearGradient id="armorPink" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#fff0f8" />
+                    <stop offset="0.24" stop-color="#ff8cc6" />
+                    <stop offset="0.62" stop-color="#f01379" />
+                    <stop offset="1" stop-color="#76113f" />
+                  </linearGradient>
+                  <linearGradient id="armorPearl" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#ffffff" />
+                    <stop offset="0.55" stop-color="#ffdced" />
+                    <stop offset="1" stop-color="#e991bc" />
+                  </linearGradient>
+                  <linearGradient id="armorDark" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#70204d" />
+                    <stop offset="1" stop-color="#260d32" />
+                  </linearGradient>
+                  <radialGradient id="heartCore" cx="50%" cy="42%" r="62%">
+                    <stop offset="0" stop-color="#ffffff" />
+                    <stop offset="0.2" stop-color="#8af5ff" />
+                    <stop offset="0.48" stop-color="#ff76ba" />
+                    <stop offset="1" stop-color="#f00776" />
+                  </radialGradient>
+                  <filter id="armorGlow" x="-80%" y="-80%" width="260%" height="260%">
+                    <feGaussianBlur stdDeviation="5" result="blur" />
+                    <feFlood flood-color="#ff3f9d" flood-opacity="0.68" />
+                    <feComposite in2="blur" operator="in" />
+                    <feMerge>
+                      <feMergeNode />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                  <filter id="coreGlow" x="-200%" y="-200%" width="500%" height="500%">
+                    <feGaussianBlur stdDeviation="9" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                <g class="energy-routes">
+                  <path pathLength="1" d="M772 496 C727 528 683 562 638 603 C585 650 548 671 498 678" />
+                  <path pathLength="1" d="M772 496 C665 440 565 348 493 210" />
+                  <path pathLength="1" d="M772 496 C662 585 535 747 397 879" />
+                  <path pathLength="1" d="M772 496 C751 626 686 773 614 882" />
+                  <path pathLength="1" d="M772 496 C614 552 414 617 242 676" />
+                </g>
+
+                <g class="hand-rose" filter="url(#armorGlow)">
+                  <path class="mini-stem" d="M762 521 C745 548 724 575 711 611" />
+                  <path class="mini-leaf" d="M731 566 C705 551 685 556 677 575 C700 582 717 579 731 566Z" />
+                  <g class="mini-bloom">
+                    <path d="M766 521 C731 521 710 502 714 479 C718 458 739 456 758 472 C749 443 768 424 790 438 C808 418 838 431 834 458 C860 467 859 497 840 511 C821 525 791 527 766 521Z" />
+                    <path d="M770 515 C748 508 742 489 752 475 C762 462 777 471 780 488 C786 467 803 460 815 472 C827 487 811 504 793 507 C804 514 793 524 780 522Z" />
+                    <circle cx="784" cy="493" r="7" />
+                  </g>
+                </g>
+
+                <g class="armor-piece gauntlet-armor" style="--delay: 0.12s; --spin: -12deg">
+                  <path d="M693 500 C731 471 789 472 827 503 L824 565 C814 600 785 628 751 641 L700 614 L674 555Z" />
+                  <path class="armor-inset" d="M720 506 L796 497 L807 550 L772 596 L714 581Z" />
+                  <path class="armor-line" d="M718 531 L801 522 M708 562 L793 552" />
+                </g>
+
+                <g class="armor-piece right-arm-armor" style="--delay: 0.32s; --spin: 15deg">
+                  <path d="M622 548 C658 522 705 530 724 568 L698 645 L645 681 L610 622Z" />
+                  <path class="armor-pearl" d="M641 556 C670 541 699 554 707 579 L686 618 L649 637 L627 608Z" />
+                </g>
+
+                <g class="armor-piece chest-armor" style="--delay: 0.55s; --spin: -8deg">
+                  <path d="M332 583 Q492 548 654 582 L701 748 L665 804 Q500 831 309 800 L280 748Z" />
+                  <path class="armor-pearl" d="M350 595 Q495 570 634 596 L652 654 Q500 686 332 651Z" />
+                  <path class="armor-dark" d="M306 735 Q494 775 680 735 L665 803 Q495 829 309 800Z" />
+                  <path class="armor-line" d="M494 582 L494 802 M333 652 Q495 693 652 654" />
+                </g>
+
+                <g class="armor-piece heart-reactor" style="--delay: 0.72s; --spin: 0deg" filter="url(#coreGlow)">
+                  <path d="M494 713 C451 681 428 647 445 619 C463 592 493 606 503 631 C516 603 551 594 569 621 C588 650 554 685 503 718Z" />
+                  <path class="core-inner" d="M502 690 C476 671 461 650 470 633 C480 616 499 627 504 643 C512 626 531 619 540 634 C550 651 529 673 502 690Z" />
+                  <circle class="core-point" cx="503" cy="657" r="7" />
+                </g>
+
+                <g class="armor-piece left-arm-armor" style="--delay: 0.9s; --spin: -20deg">
+                  <path d="M288 572 C240 583 188 638 181 696 C175 744 205 780 248 774 L311 718 L344 627Z" />
+                  <path class="armor-pearl" d="M271 600 C237 616 207 656 203 698 C202 725 216 744 239 745 L285 703 L314 623Z" />
+                  <path class="armor-line" d="M217 687 L291 700 M244 627 L319 651" />
+                </g>
+
+                <g class="armor-piece waist-armor" style="--delay: 1.06s; --spin: 10deg">
+                  <path d="M304 753 Q495 787 687 751 L703 815 Q500 850 287 815Z" />
+                  <path class="armor-pearl" d="M322 766 Q495 795 668 765 L658 795 Q496 819 327 795Z" />
+                  <circle class="waist-node" cx="495" cy="802" r="11" />
+                </g>
+
+                <g class="armor-piece left-boot-armor" style="--delay: 1.2s; --spin: -18deg">
+                  <path d="M284 807 L488 809 L484 893 C474 941 423 955 345 945 C302 940 280 907 282 862Z" />
+                  <path class="armor-pearl" d="M300 824 L470 826 L465 866 L299 869Z" />
+                  <path class="armor-line" d="M319 894 Q392 911 466 893" />
+                </g>
+
+                <g class="armor-piece right-boot-armor" style="--delay: 1.3s; --spin: 18deg">
+                  <path d="M497 809 L702 805 L707 864 C711 912 681 942 624 949 C553 957 507 936 497 894Z" />
+                  <path class="armor-pearl" d="M515 826 L686 822 L690 867 L519 870Z" />
+                  <path class="armor-line" d="M521 894 Q606 911 689 891" />
+                </g>
+
+                <g class="armor-piece ear-armor-left" style="--delay: 1.45s; --spin: -28deg">
+                  <path d="M194 275 L186 145 C187 94 222 69 267 85 L356 126 L325 251Z" />
+                  <path class="armor-pearl" d="M213 225 L210 137 C215 110 235 100 260 111 L319 138 L301 218Z" />
+                  <path class="armor-line" d="M224 139 L318 179" />
+                </g>
+
+                <g class="armor-piece ear-armor-right" style="--delay: 1.52s; --spin: 28deg">
+                  <path d="M635 124 C685 93 757 53 786 91 C808 120 815 190 805 274 L667 247Z" />
+                  <path class="armor-pearl" d="M672 139 C711 112 754 91 767 111 C780 135 787 184 782 228 L691 218Z" />
+                  <path class="armor-line" d="M689 168 L778 145" />
+                </g>
+
+                <g class="armor-piece helmet-crown" style="--delay: 1.66s; --spin: -6deg">
+                  <path d="M314 126 Q486 59 674 123 L650 229 Q495 193 329 230Z" />
+                  <path class="armor-pearl" d="M350 132 Q491 87 640 131 L625 185 Q494 158 363 190Z" />
+                  <path class="armor-line" d="M493 97 L493 196" />
+                </g>
+
+                <g class="armor-piece cheek-armor" style="--delay: 1.78s; --spin: 12deg">
+                  <path d="M190 302 L245 282 L273 430 L235 489 C204 450 188 385 190 302Z" />
+                  <path d="M797 293 L742 278 L716 430 L755 489 C785 451 801 379 797 293Z" />
+                  <path class="armor-line" d="M218 318 L248 407 M770 312 L741 405" />
+                </g>
+
+                <g class="armor-piece kitty-visor" style="--delay: 1.9s; --spin: 0deg">
+                  <path d="M285 326 Q496 274 708 326 L681 430 Q499 478 308 431Z" />
+                  <path class="visor-line" d="M304 345 Q496 306 688 345" />
+                  <circle class="visor-eye" cx="365" cy="385" r="8" />
+                  <circle class="visor-eye" cx="635" cy="385" r="8" />
+                </g>
+
+                <g class="armor-piece bow-armor" style="--delay: 2.02s; --spin: 22deg">
+                  <path d="M474 165 C431 118 438 52 482 37 C526 23 570 70 598 119 C628 73 700 47 742 80 C786 115 765 190 715 222 C670 250 626 218 598 188 C565 223 506 210 474 165Z" />
+                  <circle class="bow-core" cx="600" cy="158" r="54" />
+                  <path class="armor-line" d="M491 81 L562 146 M710 105 L640 157" />
+                </g>
+
+                <g class="final-circuitry">
+                  <path d="M494 231 L494 589" />
+                  <path d="M269 516 C342 538 402 564 445 619" />
+                  <path d="M715 506 C653 539 593 575 561 622" />
+                  <path d="M503 718 L503 797" />
+                  <circle cx="494" cy="231" r="5" />
+                  <circle cx="269" cy="516" r="5" />
+                  <circle cx="715" cy="506" r="5" />
+                </g>
+
+                <circle class="assembly-flash" cx="772" cy="496" r="26" />
+              </svg>
+
+              <span class="suit-label">KAWAII ARMOR // STANDBY</span>
+            </div>
+
+            <div class="core-readout">
+              <span>CORE</span>
+              <strong id="core-percent">00%</strong>
+            </div>
+            <div class="coordinate-readout">
+              <span>34.0522° N</span>
+              <span>LOVE ∞ E</span>
+            </div>
+          </div>
+
+          <div class="mobile-data-strip" aria-hidden="true">
+            <span>SUIT <b>READY</b></span>
+            <span>ARMOR <b>LOCKED</b></span>
+            <span>LOVE <b>∞</b></span>
+          </div>
+        </section>
+
+        <section class="copy-panel">
+          <div class="copy-topline">
+            <span class="eyebrow">KAWAII ARMOR // PRIVATE CHANNEL</span>
+            <span class="channel-no">NO. 520-1314</span>
+          </div>
+
+          <div class="intro-copy">
+            <h1>
+              玫瑰，也可以成为<br />
+              <span>守护你的战甲</span>
+            </h1>
+            <p class="subtitle">
+              TO <strong id="to-name">我最喜欢的你</strong>：
+              她手里的不是普通玫瑰，而是一套只为你启动的可爱战甲。
+            </p>
+          </div>
+
+          <div class="message-copy" aria-live="polite">
+            <div class="message-title">
+              <span>LOVE CORE</span>
+              <strong>ONLINE</strong>
+            </div>
+            <p id="love-message"></p>
+            <div class="signature">
+              <span>FROM</span>
+              <strong id="from-name">你的松松子</strong>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button class="launch-button" id="launch-button" type="button">
+              <span class="button-glow"></span>
+              <span class="button-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 3v5M5.6 6.6l3.5 3.5M18.4 6.6l-3.5 3.5" />
+                  <path d="M7.1 11.2A6 6 0 1 0 17 11" />
+                </svg>
+              </span>
+              <span class="button-copy">
+                <small>INITIATE</small>
+                <strong>启动心动核心</strong>
+              </span>
+              <span class="button-arrow">↗</span>
+            </button>
+
+            <p class="microcopy">
+              <span></span>
+              仅对你授权访问
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>MADE WITH <b>♥</b> &amp; 7.7V ENERGY</span>
+        <span class="footer-center">KITTY MODE / ENABLED</span>
+        <span>LOVE NEVER POWERS OFF</span>
+      </footer>
+
+      <div class="click-hint" id="click-hint">轻触战甲，发送心动信号</div>
+    </div>
+
+    <audio id="qixi-soundtrack" preload="auto">
+      <source src="./assets/qixi-love-core.mp3" type="audio/mpeg" />
+    </audio>
+    <script src="./script.js"></script>
+  </body>
+</html>
