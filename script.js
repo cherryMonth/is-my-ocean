@@ -180,12 +180,20 @@ function playAssemblyBursts() {
   const rect = roseWrap.getBoundingClientRect();
   const points = [
     [0.78, 0.5, 36, 80],
-    [0.66, 0.59, 22, 300],
-    [0.51, 0.67, 42, 620],
-    [0.27, 0.68, 24, 960],
-    [0.4, 0.88, 22, 1260],
-    [0.62, 0.88, 22, 1360],
-    [0.5, 0.2, 34, 1700],
+    [0.68, 0.58, 20, 780],
+    [0.64, 0.61, 22, 1120],
+    [0.51, 0.67, 34, 2220],
+    [0.51, 0.7, 42, 6670],
+    [0.27, 0.68, 24, 7200],
+    [0.5, 0.8, 24, 8300],
+    [0.4, 0.88, 22, 8900],
+    [0.62, 0.88, 22, 9400],
+    [0.3, 0.2, 24, 10000],
+    [0.7, 0.2, 24, 10500],
+    [0.5, 0.17, 30, 11100],
+    [0.5, 0.38, 26, 12200],
+    [0.62, 0.15, 30, 13300],
+    [0.51, 0.67, 64, 15560],
   ];
 
   points.forEach(([x, y, count, delay]) => {
@@ -228,7 +236,7 @@ function animateCorePercent() {
   }
 
   const start = performance.now();
-  const duration = 2650;
+  const duration = 15560;
 
   function tick(now) {
     const progress = Math.min((now - start) / duration, 1);
@@ -339,15 +347,29 @@ function activate(withSound = true) {
   window.setTimeout(roseBurst, reducedMotion ? 0 : 120);
   window.setTimeout(
     () => {
+      systemStateText.textContent = "LOVE CORE LINKED";
+      suitLabel.textContent = "CORE LINKED // SUIT SCAN";
+    },
+    reducedMotion ? 0 : 2750,
+  );
+  window.setTimeout(
+    () => {
+      systemStateText.textContent = "ARMOR DEPLOYING";
+      suitLabel.textContent = "KAWAII ARMOR // DEPLOYING";
+    },
+    reducedMotion ? 0 : 6650,
+  );
+  window.setTimeout(
+    () => {
       app.classList.add("is-assembled");
       systemStateText.textContent = "KAWAII ARMOR ONLINE";
       suitLabel.textContent = "KAWAII ARMOR // ONLINE";
       roseWrap.setAttribute("aria-label", "已经完成的 Hello Kitty 心动战甲，点击可发送心动信号");
       roseBurst();
     },
-    reducedMotion ? 0 : 2750,
+    reducedMotion ? 0 : 15560,
   );
-  window.setTimeout(() => typeMessage(content.message), reducedMotion ? 0 : 2550);
+  window.setTimeout(() => typeMessage(content.message), reducedMotion ? 0 : 16200);
 }
 
 function pulseRose(event) {
@@ -397,7 +419,15 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 animateParticles();
 
-if (query.get("open") === "1") {
+if (query.get("complete") === "1") {
+  isActive = true;
+  app.classList.add("is-active", "is-assembled", "force-complete");
+  corePercent.textContent = "100%";
+  systemStateText.textContent = "KAWAII ARMOR ONLINE";
+  suitLabel.textContent = "KAWAII ARMOR // ONLINE";
+  loveMessage.textContent = content.message;
+  loveMessage.classList.add("is-complete");
+} else if (query.get("open") === "1") {
   window.setTimeout(() => activate(false), 500);
 }
 
